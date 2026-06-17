@@ -1725,7 +1725,9 @@ async function gen(t){
       if(!d.body) throw new Error('블로그 본문 생성 실패. 다시 시도해주세요.');
     } else {
       const cleanText=rawText.replace(/```json|```/g,'').trim();
-      try{ d=JSON.parse(cleanText); }
+      // JSON 객체만 추출 (web_search 결과 텍스트가 앞뒤에 붙는 경우 대응)
+      const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+      try{ d=JSON.parse(jsonMatch ? jsonMatch[0] : cleanText); }
       catch(e1){ throw new Error('JSON 파싱 오류: 다시 시도해주세요. ('+e1.message+')'); }
     }
     stopL(baseT);lDiv.classList.add('hidden');rbDiv.classList.remove('hidden');
